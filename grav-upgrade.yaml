@@ -1,0 +1,25 @@
+---
+- name: Grav self-upgrade and update plugins
+  hosts: webservers
+  vars:
+    full_grav_path: /home/{{ inventory_hostname }}/public_html
+
+  tasks:
+  - name: Self-upgrade Grav
+    command: bin/gpm self-upgrade -y
+    args:
+      chdir: "{{ full_grav_path }}"
+    register: output_task1
+  - debug: var=output_task1.stdout_lines
+  - name: Update Grav plugins
+    command: bin/gpm update -y
+    args:
+      chdir: "{{ full_grav_path }}"
+    register: output_task2
+  - debug: var=output_task2.stdout_lines
+  - name: Clean Grav's cache
+    command: bin/grav cache
+    args:
+      chdir: "{{ full_grav_path }}"
+    register: output_task3
+  - debug: var=output_task3.stdout_lines
